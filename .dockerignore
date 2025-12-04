@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.dockerignore
+Dockerfile
+docker-compose.yml
+README.md
+.docker
+node_modules
+vendor
+.storage
+.bootstrap/cache

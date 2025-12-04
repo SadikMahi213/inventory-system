@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: inventory-management-app
+    container_name: inventory-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - inventory-network
+
+  # Web Server Service
+  webserver:
+    image: nginx:alpine
+    container_name: inventory-webserver
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - inventory-network
+    depends_on:
+      - app
+
+  # Database Service
+  db:
+    image: mysql:5.7
+    container_name: inventory-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: inventory_management
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: inventory_user
+      MYSQL_PASSWORD: inventory_password
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    ports:
+      - "3306:3306"
+    networks:
+      - inventory-network
+
+  # PHPMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: inventory-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    networks:
+      - inventory-network
+    depends_on:
+      - db
+
+networks:
+  inventory-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
