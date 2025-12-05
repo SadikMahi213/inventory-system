@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profit_losses', function (Blueprint $table) {
-            $table->id();
-            $table->decimal('total_sales', 15, 2);
-            $table->decimal('total_purchase', 15, 2);
-            $table->decimal('net_profit', 15, 2);
-            $table->timestamps();
-        });
+        // Only create table if it doesn't already exist
+        if (!Schema::hasTable('profit_losses')) {
+            Schema::create('profit_losses', function (Blueprint $table) {
+                $table->id();
+                $table->decimal('total_sales', 15, 2);
+                $table->decimal('total_purchase', 15, 2);
+                $table->decimal('net_profit', 15, 2);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

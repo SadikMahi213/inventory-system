@@ -19,7 +19,15 @@
         </div>
     @endif
 
-    <!-- Error Messages -->
+    <!-- Error Message -->
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <!-- Validation Errors -->
     @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <strong class="font-bold">Whoops!</strong>
@@ -32,58 +40,150 @@
         </div>
     @endif
 
-    <!-- Product Form -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <form action="{{ route('products.update', $product) }}" method="POST" class="px-6 py-4">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form action="{{ route('products.update', $product) }}" method="POST" id="productForm">
             @csrf
             @method('PUT')
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="mb-4">
-                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Product Name *</label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $product->name) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                <!-- Product Name -->
+                <div>
+                    <label for="product_name" class="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                    <input type="text" name="product_name" id="product_name" value="{{ old('product_name', $product->product_name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                 </div>
 
-                <div class="mb-4">
-                    <label for="model" class="block text-gray-700 text-sm font-bold mb-2">Model</label>
-                    <input type="text" name="model" id="model" value="{{ old('model', $product->model) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <!-- Size -->
+                <div>
+                    <label for="size" class="block text-sm font-medium text-gray-700 mb-1">Size</label>
+                    <input type="text" name="size" id="size" value="{{ old('size', $product->size) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
-                <div class="mb-4">
-                    <label for="size" class="block text-gray-700 text-sm font-bold mb-2">Size</label>
-                    <input type="text" name="size" id="size" value="{{ old('size', $product->size) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <!-- Brand -->
+                <div>
+                    <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                    <input type="text" name="brand" id="brand" value="{{ old('brand', $product->brand) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
-                <div class="mb-4">
-                    <label for="color" class="block text-gray-700 text-sm font-bold mb-2">Color</label>
-                    <input type="text" name="color" id="color" value="{{ old('color', $product->color) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <!-- Grade -->
+                <div>
+                    <label for="grade" class="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                    <input type="text" name="grade" id="grade" value="{{ old('grade', $product->grade) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
-                <div class="mb-4">
-                    <label for="quality" class="block text-gray-700 text-sm font-bold mb-2">Quality</label>
-                    <input type="text" name="quality" id="quality" value="{{ old('quality', $product->quality) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <!-- Material -->
+                <div>
+                    <label for="material" class="block text-sm font-medium text-gray-700 mb-1">Material</label>
+                    <input type="text" name="material" id="material" value="{{ old('material', $product->material) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
-                <div class="mb-4">
-                    <label for="unit" class="block text-gray-700 text-sm font-bold mb-2">Unit *</label>
-                    <input type="text" name="unit" id="unit" value="{{ old('unit', $product->unit) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                <!-- Color -->
+                <div>
+                    <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                    <input type="text" name="color" id="color" value="{{ old('color', $product->color) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
-                <div class="mb-4">
-                    <label for="unit_price" class="block text-gray-700 text-sm font-bold mb-2">Unit Price *</label>
-                    <input type="number" step="0.01" name="unit_price" id="unit_price" value="{{ old('unit_price', $product->unit_price) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                <!-- Model No -->
+                <div>
+                    <label for="model_no" class="block text-sm font-medium text-gray-700 mb-1">Model No</label>
+                    <input type="text" name="model_no" id="model_no" value="{{ old('model_no', $product->model_no) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+
+                <!-- Product Code -->
+                <div>
+                    <label for="product_code" class="block text-sm font-medium text-gray-700 mb-1">Product Code *</label>
+                    <input type="text" name="product_code" id="product_code" value="{{ old('product_code', $product->product_code) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Unit Qty -->
+                <div>
+                    <label for="unit_qty" class="block text-sm font-medium text-gray-700 mb-1">Unit Quantity *</label>
+                    <input type="number" step="0.01" name="unit_qty" id="unit_qty" value="{{ old('unit_qty', $product->unit_qty) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Unit -->
+                <div>
+                    <label for="unit" class="block text-sm font-medium text-gray-700 mb-1">Unit *</label>
+                    <input type="text" name="unit" id="unit" value="{{ old('unit', $product->unit) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Unit Rate -->
+                <div>
+                    <label for="unit_rate" class="block text-sm font-medium text-gray-700 mb-1">Unit Rate (Buy Price) *</label>
+                    <input type="number" step="0.01" name="unit_rate" id="unit_rate" value="{{ old('unit_rate', $product->unit_rate) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Total Buy -->
+                <div>
+                    <label for="total_buy" class="block text-sm font-medium text-gray-700 mb-1">Total Buy *</label>
+                    <input type="number" step="0.01" name="total_buy" id="total_buy" value="{{ old('total_buy', $product->total_buy) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required readonly>
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                    <select name="category_id" id="category_id" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <option value="">Select Category</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ (old('category_id', $product->category_id) == $category->id) ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                    <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity (Stock) *</label>
+                    <input type="number" step="0.01" name="quantity" id="quantity" value="{{ old('quantity', $product->quantity) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Approximate Rate -->
+                <div>
+                    <label for="approximate_rate" class="block text-sm font-medium text-gray-700 mb-1">Approximate Rate *</label>
+                    <input type="number" step="0.01" name="approximate_rate" id="approximate_rate" value="{{ old('approximate_rate', $product->approximate_rate) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Authentication Rate -->
+                <div>
+                    <label for="authentication_rate" class="block text-sm font-medium text-gray-700 mb-1">Authentication Rate *</label>
+                    <input type="number" step="0.01" name="authentication_rate" id="authentication_rate" value="{{ old('authentication_rate', $product->authentication_rate) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Sell Rate -->
+                <div>
+                    <label for="sell_rate" class="block text-sm font-medium text-gray-700 mb-1">Sell Rate *</label>
+                    <input type="number" step="0.01" name="sell_rate" id="sell_rate" value="{{ old('sell_rate', $product->sell_rate) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between mt-6">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <!-- Submit Button -->
+            <div class="mt-6">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     <i class="fas fa-save mr-2"></i> Update Product
                 </button>
-                <a href="{{ route('products.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    <i class="fas fa-times mr-2"></i> Cancel
-                </a>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    // Auto-calculate total_buy = unit_qty * unit_rate
+    document.addEventListener('DOMContentLoaded', function() {
+        const unitQty = document.getElementById('unit_qty');
+        const unitRate = document.getElementById('unit_rate');
+        const totalBuy = document.getElementById('total_buy');
+        
+        function calculateTotalBuy() {
+            const qty = parseFloat(unitQty.value) || 0;
+            const rate = parseFloat(unitRate.value) || 0;
+            totalBuy.value = (qty * rate).toFixed(2);
+        }
+        
+        unitQty.addEventListener('input', calculateTotalBuy);
+        unitRate.addEventListener('input', calculateTotalBuy);
+        
+        // Calculate initial value
+        calculateTotalBuy();
+    });
+</script>
 @endsection

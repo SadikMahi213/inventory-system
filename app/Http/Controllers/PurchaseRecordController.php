@@ -6,9 +6,14 @@ use App\Events\PurchaseRecordCreated;
 use App\Models\PurchaseRecord;
 use App\Models\Product;
 use App\Models\Supplier;
+use App\Exports\PurchaseRecordsExport;
+use App\Exports\PurchaseRecordsTemplateExport;
+use App\Imports\PurchaseRecordsImport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Exception;
 
 class PurchaseRecordController extends Controller
 {
@@ -94,7 +99,7 @@ class PurchaseRecordController extends Controller
             'quantity' => 'required|integer|min:1',
             'unit_price' => 'required|numeric|min:0',
             'supplier_id' => 'required|exists:suppliers,id',
-            'payment_status' => 'required|in:pending,paid,partial',
+            'payment_status' => 'required|in:paid,due,partial',
         ]);
 
         // Get product details
@@ -106,11 +111,11 @@ class PurchaseRecordController extends Controller
         $purchaseRecord = PurchaseRecord::create([
             'date' => $request->date,
             'product_id' => $request->product_id,
-            'product_name' => $product->name,
-            'model' => $product->model,
+            'product_name' => $product->product_name,
+            'model' => $product->model_no,
             'size' => $product->size,
             'color' => $product->color,
-            'quality' => $product->quality,
+            'quality' => $product->grade,
             'quantity' => $request->quantity,
             'unit' => $product->unit,
             'unit_price' => $request->unit_price,
@@ -155,7 +160,7 @@ class PurchaseRecordController extends Controller
             'quantity' => 'required|integer|min:1',
             'unit_price' => 'required|numeric|min:0',
             'supplier_id' => 'required|exists:suppliers,id',
-            'payment_status' => 'required|in:pending,paid,partial',
+            'payment_status' => 'required|in:paid,due,partial',
         ]);
 
         // Get product details
@@ -167,11 +172,11 @@ class PurchaseRecordController extends Controller
         $purchaseRecord->update([
             'date' => $request->date,
             'product_id' => $request->product_id,
-            'product_name' => $product->name,
-            'model' => $product->model,
+            'product_name' => $product->product_name,
+            'model' => $product->model_no,
             'size' => $product->size,
             'color' => $product->color,
-            'quality' => $product->quality,
+            'quality' => $product->grade,
             'quantity' => $request->quantity,
             'unit' => $product->unit,
             'unit_price' => $request->unit_price,
@@ -193,5 +198,50 @@ class PurchaseRecordController extends Controller
 
         return redirect()->route('purchase-records.index')
             ->with('success', 'Purchase record deleted successfully.');
+    }
+
+    /**
+     * Download Excel template for purchase records import.
+     */
+    public function downloadTemplate()
+    {
+        return Excel::download(new PurchaseRecordsTemplateExport, 'purchase_records_template.xlsx');
+    }
+
+    /**
+     * Export purchase records to Excel.
+     */
+    public function export()
+    {
+        return Excel::download(new PurchaseRecordsExport, 'purchase_records.xlsx');
+    }
+
+    /**
+     * Show the form for importing purchase records.
+     */
+    public function importForm(): View
+    {
+        return view('purchase-records.import');
+    }
+
+    /**
+     * Import purchase records from Excel/CSV file.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            Excel::import(new PurchaseRecordsImport, $request->file('file'));
+            
+            return redirect()->route('purchase-records.index')
+                ->with('success', 'Purchase records imported successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error importing purchase records: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 }

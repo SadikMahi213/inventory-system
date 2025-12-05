@@ -1,6 +1,13 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
+    
+    <!-- Intended URL Message -->
+    @if (session('url.intended'))
+        <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded">
+            Please log in to access the requested page.
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}">
         @csrf

@@ -11,7 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::rename('stock', 'stocks');
+        // Only rename if the source table exists and target doesn't
+        if (Schema::hasTable('stock') && !Schema::hasTable('stocks')) {
+            Schema::rename('stock', 'stocks');
+        }
     }
 
     /**
@@ -19,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::rename('stocks', 'stock');
+        // Only rename if the source table exists and target doesn't
+        if (Schema::hasTable('stocks') && !Schema::hasTable('stock')) {
+            Schema::rename('stocks', 'stock');
+        }
     }
 };

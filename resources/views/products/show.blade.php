@@ -6,8 +6,8 @@
 <div class="container mx-auto px-4">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Product Details</h1>
-        <div>
-            <a href="{{ route('products.edit', $product) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mr-2">
+        <div class="flex space-x-2">
+            <a href="{{ route('products.edit', $product) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 <i class="fas fa-edit mr-2"></i> Edit
             </a>
             <a href="{{ route('products.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
@@ -24,154 +24,107 @@
         </div>
     @endif
 
-    <!-- Product Details -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="px-6 py-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h2 class="text-xl font-bold mb-4">Basic Information</h2>
-                    <table class="min-w-full">
-                        <tr>
-                            <td class="py-2 font-semibold">Product Code:</td>
-                            <td class="py-2">{{ $product->product_code }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Name:</td>
-                            <td class="py-2">{{ $product->name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Model:</td>
-                            <td class="py-2">{{ $product->model ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Size:</td>
-                            <td class="py-2">{{ $product->size ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Color:</td>
-                            <td class="py-2">{{ $product->color ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Quality:</td>
-                            <td class="py-2">{{ $product->quality ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Unit:</td>
-                            <td class="py-2">{{ $product->unit }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Unit Price:</td>
-                            <td class="py-2">${{ number_format($product->unit_price, 2) }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div>
-                    <h2 class="text-xl font-bold mb-4">Related Information</h2>
-                    <table class="min-w-full">
-                        <tr>
-                            <td class="py-2 font-semibold">Created At:</td>
-                            <td class="py-2">{{ $product->created_at->format('M d, Y H:i') }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Updated At:</td>
-                            <td class="py-2">{{ $product->updated_at->format('M d, Y H:i') }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Total Purchases:</td>
-                            <td class="py-2">{{ $product->purchaseRecords->count() }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Total Sales:</td>
-                            <td class="py-2">{{ $product->salesRecords->count() }}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-semibold">Current Stock:</td>
-                            <td class="py-2">{{ $product->stock ? $product->stock->current_stock : 0 }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">{{ $product->product_name }}</h2>
+            <p class="text-gray-600">Product Code: {{ $product->product_code }}</p>
         </div>
-    </div>
-
-    <!-- Related Records -->
-    <div class="mt-8">
-        <h2 class="text-2xl font-bold mb-4">Related Records</h2>
         
-        <!-- Purchase Records -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold">Purchase Records</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($product->purchaseRecords as $purchase)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->date->format('M d, Y') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->quantity }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($purchase->unit_price, 2) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($purchase->total_price, 2) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->supplier->name ?? 'N/A' }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No purchase records found.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3 pb-2 border-b border-gray-200">Basic Information</h3>
+                    <dl class="grid grid-cols-1 gap-2">
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Product Name</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->product_name }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Product Code</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->product_code }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Brand</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->brand ?? '-' }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Model No</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->model_no ?? '-' }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Size</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->size ?? '-' }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Color</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->color ?? '-' }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Grade</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->grade ?? '-' }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Material</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->material ?? '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
 
-        <!-- Sales Records -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold">Sales Records</h3>
+                <!-- Pricing & Stock Information -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3 pb-2 border-b border-gray-200">Pricing & Stock</h3>
+                    <dl class="grid grid-cols-1 gap-2">
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Category</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->category->name ?? '-' }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Unit</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->unit }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Unit Quantity</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->unit_qty }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Unit Rate</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">${{ number_format($product->unit_rate, 2) }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Total Buy</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">${{ number_format($product->total_buy, 2) }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Quantity (Stock)</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">{{ $product->quantity }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Approximate Rate</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">${{ number_format($product->approximate_rate, 2) }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Authentication Rate</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">${{ number_format($product->authentication_rate, 2) }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="w-1/3 text-sm font-medium text-gray-500">Sell Rate</dt>
+                            <dd class="w-2/3 text-sm text-gray-900">${{ number_format($product->sell_rate, 2) }}</dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($product->salesRecords as $sale)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $sale->invoice_no }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $sale->created_at->format('M d, Y') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $sale->quantity }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($sale->price, 2) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($sale->total_amount, 2) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $sale->customer->name ?? 'N/A' }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No sales records found.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+
+            <!-- Timestamps -->
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Created At: {{ $product->created_at->format('M d, Y H:i') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Last Updated: {{ $product->updated_at->format('M d, Y H:i') }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

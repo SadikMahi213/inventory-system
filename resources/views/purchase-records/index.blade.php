@@ -10,9 +10,34 @@
             <a href="{{ route('purchase-records.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 <i class="fas fa-plus mr-2"></i> Add New Purchase
             </a>
+            <a href="{{ route('purchase-records.import.form') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-file-import mr-2"></i> Import Excel
+            </a>
+            <a href="{{ route('purchase-records.export') }}" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-file-export mr-2"></i> Export Excel
+            </a>
+            <a href="{{ route('purchase-records.download.template') }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-download mr-2"></i> Download Template
+            </a>
         </div>
     </div>
     
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+    @endif
+    
+    <!-- Error Message -->
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Search and Filter Form -->
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
         <form method="GET" action="{{ route('purchase-records.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -83,62 +108,6 @@
         </div>
     </div>
 
-    <!-- Success Message -->
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <strong class="font-bold">Success!</strong>
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
-
-    <!-- Filters -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <form method="GET" action="{{ route('purchase-records.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label for="product_id" class="block text-gray-700 text-sm font-bold mb-2">Product</label>
-                <select name="product_id" id="product_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option value="">All Products</option>
-                    @foreach($products as $product)
-                        <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>
-                            {{ $product->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            
-            <div>
-                <label for="supplier_id" class="block text-gray-700 text-sm font-bold mb-2">Supplier</label>
-                <select name="supplier_id" id="supplier_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option value="">All Suppliers</option>
-                    @foreach($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                            {{ $supplier->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            
-            <div>
-                <label for="date_from" class="block text-gray-700 text-sm font-bold mb-2">Date From</label>
-                <input type="date" name="date_from" id="date_from" value="{{ request('date_from') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-            
-            <div>
-                <label for="date_to" class="block text-gray-700 text-sm font-bold mb-2">Date To</label>
-                <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-            
-            <div class="md:col-span-4 flex justify-end">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-                    <i class="fas fa-filter mr-2"></i> Filter
-                </button>
-                <a href="{{ route('purchase-records.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-undo mr-2"></i> Reset
-                </a>
-            </div>
-        </form>
-    </div>
-
     <!-- Purchase Records Table -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="overflow-x-auto">
@@ -173,9 +142,9 @@
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                     Partial
                                 </span>
-                            @else
+                            @elseif($purchase->payment_status == 'due')
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                    Pending
+                                    Due
                                 </span>
                             @endif
                         </td>

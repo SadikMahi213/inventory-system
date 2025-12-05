@@ -25,6 +25,18 @@ class PurchaseRecord extends Model
         'payment_status',
     ];
     
+    protected $casts = [
+        'date' => 'date',
+        'quantity' => 'integer',
+        'unit_price' => 'decimal:2',
+        'total_price' => 'decimal:2',
+    ];
+    
+    // Define allowed payment statuses
+    public const PAYMENT_STATUS_PAID = 'paid';
+    public const PAYMENT_STATUS_DUE = 'due';
+    public const PAYMENT_STATUS_PARTIAL = 'partial';
+    
     public function product()
     {
         return $this->belongsTo(Product::class);

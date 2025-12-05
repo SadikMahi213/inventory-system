@@ -19,6 +19,14 @@
         </div>
     @endif
 
+    <!-- Error Message -->
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Error Messages -->
     @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -34,7 +42,7 @@
 
     <!-- Purchase Form -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <form action="{{ route('purchase-records.update', $purchaseRecord) }}" method="POST" class="px-6 py-4">
+        <form action="{{ route('purchase-records.update', $purchaseRecord) }}" method="POST" class="px-6 py-4" id="purchaseForm">
             @csrf
             @method('PUT')
             
@@ -49,8 +57,8 @@
                     <select name="product_id" id="product_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                         <option value="">Select a product</option>
                         @foreach($products as $product)
-                            <option value="{{ $product->id }}" {{ old('product_id', $purchaseRecord->product_id) == $product->id ? 'selected' : '' }}>
-                                {{ $product->name }} ({{ $product->product_code }})
+                            <option value="{{ $product->id }}" {{ old('product_id', $purchaseRecord->product_id) == $product->id ? 'selected' : '' }} data-unit="{{ $product->unit }}">
+                                {{ $product->product_name }} ({{ $product->product_code }})
                             </option>
                         @endforeach
                     </select>
@@ -64,6 +72,11 @@
                 <div class="mb-4">
                     <label for="unit_price" class="block text-gray-700 text-sm font-bold mb-2">Unit Price *</label>
                     <input type="number" step="0.01" name="unit_price" id="unit_price" value="{{ old('unit_price', $purchaseRecord->unit_price) }}" min="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="total_price" class="block text-gray-700 text-sm font-bold mb-2">Total Price *</label>
+                    <input type="number" step="0.01" name="total_price" id="total_price" value="{{ old('total_price', $purchaseRecord->total_price) }}" min="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required readonly>
                 </div>
 
                 <div class="mb-4">
@@ -81,7 +94,7 @@
                 <div class="mb-4">
                     <label for="payment_status" class="block text-gray-700 text-sm font-bold mb-2">Payment Status *</label>
                     <select name="payment_status" id="payment_status" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                        <option value="pending" {{ old('payment_status', $purchaseRecord->payment_status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="due" {{ old('payment_status', $purchaseRecord->payment_status) == 'due' ? 'selected' : '' }}>Due</option>
                         <option value="partial" {{ old('payment_status', $purchaseRecord->payment_status) == 'partial' ? 'selected' : '' }}>Partial</option>
                         <option value="paid" {{ old('payment_status', $purchaseRecord->payment_status) == 'paid' ? 'selected' : '' }}>Paid</option>
                     </select>
@@ -99,4 +112,25 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Auto-calculate total price = quantity * unit_price
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantity = document.getElementById('quantity');
+        const unitPrice = document.getElementById('unit_price');
+        const totalPrice = document.getElementById('total_price');
+        
+        function calculateTotalPrice() {
+            const qty = parseFloat(quantity.value) || 0;
+            const price = parseFloat(unitPrice.value) || 0;
+            totalPrice.value = (qty * price).toFixed(2);
+        }
+        
+        quantity.addEventListener('input', calculateTotalPrice);
+        unitPrice.addEventListener('input', calculateTotalPrice);
+        
+        // Calculate initial value
+        calculateTotalPrice();
+    });
+</script>
 @endsection

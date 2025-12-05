@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseRecordController;
@@ -13,22 +13,43 @@ use App\Http\Controllers\CostAnalysisController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\CsvController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
-Route::get('/gallery', [WebsiteController::class, 'media'])->name('website.media');
-Route::get('/contact', [WebsiteController::class, 'contact'])->name('website.contact');
-Route::post('/media/upload', [WebsiteController::class, 'uploadMedia'])->name('website.media.upload');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', [WebsiteController::class, 'index'])->name('home');
+Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
+Route::get('/gallery', [WebsiteController::class, 'media'])->name('media');
+Route::post('/media/upload', [WebsiteController::class, 'uploadMedia'])->name('media.upload');
+
+// Public routes for downloading templates
+Route::get('/products/download-template', [ProductController::class, 'downloadTemplate'])->name('products.download.template');
+Route::get('/purchase-records/download-template', [PurchaseRecordController::class, 'downloadTemplate'])->name('purchase-records.download.template');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Products
+    Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
+    Route::get('/products/import/form', [ProductController::class, 'importForm'])->name('products.import.form');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::resource('products', ProductController::class);
     
     // Purchase Records
+    Route::get('/purchase-records/export', [PurchaseRecordController::class, 'export'])->name('purchase-records.export');
+    Route::get('/purchase-records/import/form', [PurchaseRecordController::class, 'importForm'])->name('purchase-records.import.form');
+    Route::post('/purchase-records/import', [PurchaseRecordController::class, 'import'])->name('purchase-records.import');
     Route::resource('purchase-records', PurchaseRecordController::class);
     
     // Sales Records

@@ -9,11 +9,19 @@ class ProfitLoss extends Model
 {
     use HasFactory;
     
-    protected $table = 'profit_losses';
-    
     protected $fillable = [
+        'date',
         'total_sales',
-        'total_purchase',
+        'total_purchase_cost',
+        'operating_cost',
         'net_profit',
+    ];
+    
+    protected $casts = [
+        'date' => 'date',
+        'total_sales' => 'decimal:2',
+        'total_purchase_cost' => 'decimal:2',
+        'operating_cost' => 'decimal:2',
+        'net_profit' => 'decimal:2',
     ];
 }

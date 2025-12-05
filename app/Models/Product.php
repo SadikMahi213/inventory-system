@@ -10,18 +10,30 @@ class Product extends Model
     use HasFactory;
     
     protected $fillable = [
-        'product_code',
-        'name',
-        'model',
+        'product_name',
         'size',
+        'brand',
+        'grade',
+        'material',
         'color',
-        'quality',
+        'model_no',
+        'product_code',
+        'unit_qty',
         'unit',
-        'unit_price',
-        'selling_price',
-        'description',
+        'unit_rate',
+        'total_buy',
+        'category_id',
+        'quantity',
+        'approximate_rate',
+        'authentication_rate',
+        'sell_rate',
         'is_featured',
     ];
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     
     public function purchaseRecords()
     {

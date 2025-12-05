@@ -1,0 +1,4 @@
+Date,Product Id,Product Name,Product Model,Size,Color,Grade / Quality,Quantity,Unit,Unit Price,Total Price,Supplier,Payment Status
+2025-12-01,,Test Product,,,Red,A+,5,Piece,5.99,29.95,Test Supplier,Paid
+2025-12-02,,Another Product,,,Blue,B,3,Piece,12.50,37.50,Another Supplier,Due
+2025-12-03,,Third Product,,,Green,C+,10,Piece,3.25,32.50,Third Supplier,Partial
