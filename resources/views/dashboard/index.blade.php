@@ -234,7 +234,10 @@
                         @endphp
                         @forelse($recentPurchases as $purchase)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->date->format('M d, Y') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    {{ optional($purchase->date)->format('M d, Y') }}
+</td>
+
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $purchase->product->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->quantity }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($purchase->total_price, 2) }}</td>

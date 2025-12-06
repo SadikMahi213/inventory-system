@@ -10,24 +10,13 @@ use Illuminate\View\View;
 class WebsiteController extends Controller
 {
     /**
-     * Display the public website homepage
+     * Display the registration form on the homepage
      *
      * @return View
      */
     public function index(): View
     {
-        // Get featured products
-        $featuredProducts = Product::where('is_featured', true)
-            ->with('stock')
-            ->limit(6)
-            ->get();
-            
-        // Get latest media
-        $mediaItems = Media::orderBy('created_at', 'desc')
-            ->limit(6)
-            ->get();
-
-        return view('website.index', compact('featuredProducts', 'mediaItems'));
+        return view('home-register');
     }
 
     /**
