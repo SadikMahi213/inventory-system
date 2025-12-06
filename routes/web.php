@@ -14,6 +14,7 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\CsvController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,9 +43,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Products
     Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
+    Route::get('/products/export-data', [ProductController::class, 'exportData'])->name('products.export.data');
     Route::get('/products/import/form', [ProductController::class, 'importForm'])->name('products.import.form');
     Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::resource('products', ProductController::class);
+    
+    // Categories
+    Route::get('/categories/download-template', [CategoryController::class, 'downloadTemplate'])->name('categories.download.template');
+    Route::get('/categories/import/form', [CategoryController::class, 'importForm'])->name('categories.import.form');
+    Route::post('/categories/import', [CategoryController::class, 'import'])->name('categories.import');
+    Route::resource('categories', CategoryController::class);
     
     // Purchase Records
     Route::get('/purchase-records/export', [PurchaseRecordController::class, 'export'])->name('purchase-records.export');

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Import Products')
+@section('title', 'Import Categories')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Import Products</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Import Categories</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-2">
-                Upload an Excel or CSV file to import products into the system.
+                Upload an Excel or CSV file to import categories into the system.
             </p>
         </div>
 
@@ -17,28 +17,34 @@
             <strong>Note:</strong> You are currently logged in and can access the template download functionality.
         </div>
 
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <h2 class="text-xl font-semibold mb-4">Download Template</h2>
                 <p class="mb-4">Download the Excel template to ensure your data is formatted correctly for import.</p>
-                <a href="{{ route('products.download.template') }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-flex items-center mb-3">
+                <a href="{{ route('categories.download.template') }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
                     <i class="fas fa-download mr-2"></i> Download Template
-                </a>
-                
-                <h2 class="text-xl font-semibold mb-4 mt-6">Export Current Data</h2>
-                <p class="mb-4">Download all current product data as CSV.</p>
-                <a href="{{ route('products.export.data') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                    <i class="fas fa-file-export mr-2"></i> Export Product Data
                 </a>
             </div>
 
             <hr class="my-6 md:hidden">
 
             <div>
-                <h2 class="text-xl font-semibold mb-4">Import Products</h2>
-                <p class="mb-4">Upload your Excel or CSV file to import products.</p>
+                <h2 class="text-xl font-semibold mb-4">Import Categories</h2>
+                <p class="mb-4">Upload your Excel or CSV file to import categories.</p>
                 
-                <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="{{ route('categories.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     
                     <div>
@@ -50,16 +56,14 @@
                     <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-md">
                         <h3 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Import Rules:</h3>
                         <ul class="list-disc list-inside text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                            <li>Duplicate product codes will update existing records</li>
-                            <li>Missing categories will be automatically created</li>
-                            <li>Total buy will be calculated if left empty (Unit Qty × Unit Rate)</li>
+                            <li>Duplicate category names will update existing records</li>
                             <li>Empty rows will be skipped automatically</li>
                         </ul>
                     </div>
                     
                     <div class="mt-6">
                         <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                            <i class="fas fa-file-import mr-2"></i> Import Products
+                            <i class="fas fa-file-import mr-2"></i> Import Categories
                         </button>
                     </div>
                 </form>

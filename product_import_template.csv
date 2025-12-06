@@ -1,0 +1,9 @@
+product_code,product_name,brand,model,unit_rate,quantity,category
+PROD001,Laptop Computer,Apple,MacBook Pro,1299.99,5,Electronics
+PROD002,Wireless Mouse,Logitech,MX Master 3,99.99,20,Electronics
+PROD003,Mechanical Keyboard,Microsoft,Surface Keyboard,129.99,15,Electronics
+PROD004,4K Monitor,Dell,UltraSharp U2723QE,399.99,8,Electronics
+PROD005,Standing Desk,IKEA,BEKANT,199.99,3,Furniture
+,Partial Product Data,,,- Empty product code will be accepted
+PROD007,Product with New Category,Brand X,Model Y,45.00,25,New Category Name
+PROD008,Minimal Product,,,,,General

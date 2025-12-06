@@ -1,0 +1,6 @@
+product_code,product_name,brand,model,unit_rate,quantity,category
+PROD001,Laptop,Apple,MacBook Pro,1299.99,5,Electronics
+PROD002,Mouse,Logitech,MX Master 3,99.99,20,Electronics
+PROD003,Keyboard,Microsoft,Surface Keyboard,129.99,15,Electronics
+PROD004,Monitor,Dell,UltraSharp U2723QE,399.99,8,Electronics
+PROD005,Desk,IKEA,BEKANT,199.99,3,Furniture

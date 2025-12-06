@@ -170,7 +170,11 @@ class ProductController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv'
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240' // 10MB max
+        ], [
+            'file.required' => 'Please select a file to import.',
+            'file.mimes' => 'Only Excel (.xlsx, .xls) and CSV files are allowed.',
+            'file.max' => 'File size must not exceed 10MB.'
         ]);
 
         try {
@@ -194,10 +198,120 @@ class ProductController extends Controller
     }
 
     /**
-     * Download Excel template for product import.
+     * Download CSV template for product import.
      */
     public function downloadTemplate()
     {
-        return Excel::download(new ProductsTemplateExport, 'products_template.xlsx');
+        $headers = [
+            'product_code',
+            'unit_qty',
+            'unit_rate',
+            'total_buy',
+            'product_name',
+            'model',
+            'size',
+            'brand',
+            'grade',
+            'material',
+            'color',
+            'model_no',
+            'quality',
+            'unit',
+            'unit_price',
+            'selling_price',
+            'description',
+            'is_featured',
+            'category',
+            'quantity',
+            'approximate_rate',
+            'authentication_rate',
+            'sell_rate'
+        ];
+        
+        $callback = function() use ($headers) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=product_template.csv"
+        ]);
+    }
+
+    /**
+     * Export all products data to CSV.
+     */
+    public function exportData()
+    {
+        $headers = [
+            'product_code',
+            'unit_qty',
+            'unit_rate',
+            'total_buy',
+            'product_name',
+            'model',
+            'size',
+            'brand',
+            'grade',
+            'material',
+            'color',
+            'model_no',
+            'quality',
+            'unit',
+            'unit_price',
+            'selling_price',
+            'description',
+            'is_featured',
+            'category',
+            'quantity',
+            'approximate_rate',
+            'authentication_rate',
+            'sell_rate'
+        ];
+        
+        $products = Product::all();
+        
+        $callback = function() use ($headers, $products) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            
+            foreach ($products as $product) {
+                $row = [
+                    $product->product_code,
+                    $product->unit_qty,
+                    $product->unit_rate,
+                    $product->total_buy,
+                    $product->product_name,
+                    $product->model,
+                    $product->size,
+                    $product->brand,
+                    $product->grade,
+                    $product->material,
+                    $product->color,
+                    $product->model_no,
+                    $product->quality,
+                    $product->unit,
+                    $product->unit_price,
+                    $product->selling_price,
+                    $product->description,
+                    $product->is_featured,
+                    $product->category ? $product->category->name : '',
+                    $product->quantity,
+                    $product->approximate_rate,
+                    $product->authentication_rate,
+                    $product->sell_rate
+                ];
+                fputcsv($file, $row);
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=product_data.csv"
+        ]);
     }
 }
