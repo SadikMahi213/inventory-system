@@ -11,11 +11,12 @@ class PurchaseRecord extends Model
     
     protected $fillable = [
         'date',
+        'invoice_no',
         'product_id',
         'product_name',
         'model',
         'size',
-        'color',
+        'color_or_material',
         'quality',
         'quantity',
         'unit',
@@ -27,7 +28,7 @@ class PurchaseRecord extends Model
     
     protected $casts = [
         'date' => 'date',
-        'quantity' => 'integer',
+        'quantity' => 'decimal:2',
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',
     ];

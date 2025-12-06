@@ -7,7 +7,7 @@
     <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
         <h1 class="text-3xl font-bold">Purchase Records</h1>
         <div class="flex flex-col sm:flex-row gap-2">
-            <a href="{{ route('purchase-records.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{{ route('purchase-records.create.manual') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 <i class="fas fa-plus mr-2"></i> Add New Purchase
             </a>
             <a href="{{ route('purchase-records.import.form') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
@@ -127,7 +127,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($purchaseRecords as $purchase)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->date->format('M d, Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ optional($purchase->date)->format('M d, Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $purchase->product_name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->supplier->name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $purchase->quantity }}</td>

@@ -36,6 +36,7 @@ Route::post('/media/upload', [WebsiteController::class, 'uploadMedia'])->name('m
 // Public routes for downloading templates
 Route::get('/products/download-template', [ProductController::class, 'downloadTemplate'])->name('products.download.template');
 Route::get('/purchase-records/download-template', [PurchaseRecordController::class, 'downloadTemplate'])->name('purchase-records.download.template');
+Route::get('/sales-records/download-template', [SalesRecordController::class, 'downloadTemplate'])->name('sales-records.download.template');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
@@ -57,10 +58,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Purchase Records
     Route::get('/purchase-records/export', [PurchaseRecordController::class, 'export'])->name('purchase-records.export');
     Route::get('/purchase-records/import/form', [PurchaseRecordController::class, 'importForm'])->name('purchase-records.import.form');
+    Route::get('/purchase-records/create-manual', [PurchaseRecordController::class, 'createManual'])->name('purchase-records.create.manual');
+    Route::post('/purchase-records/store-manual', [PurchaseRecordController::class, 'storeManual'])->name('purchase-records.store-manual');
     Route::post('/purchase-records/import', [PurchaseRecordController::class, 'import'])->name('purchase-records.import');
     Route::resource('purchase-records', PurchaseRecordController::class);
     
-    // Sales Records
+    // Sales Records - Custom routes must be defined before resource routes
+    Route::get('/sales-records/create-manual', [SalesRecordController::class, 'createManual'])->name('sales-records.create.manual');
+    Route::post('/sales-records/store-manual', [SalesRecordController::class, 'storeManual'])->name('sales-records.store.manual');
+    Route::get('/sales-records/import', [SalesRecordController::class, 'importView'])->name('sales-records.import.view');
+    Route::post('/sales-records/import', [SalesRecordController::class, 'import'])->name('sales-records.import');
+    Route::get('/sales-records/export', [SalesRecordController::class, 'export'])->name('sales-records.export');
     Route::resource('sales-records', SalesRecordController::class);
     
     // Stock

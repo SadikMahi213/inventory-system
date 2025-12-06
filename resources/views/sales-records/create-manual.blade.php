@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Sales Record')
+@section('title', 'Add New Sales Record')
 
 @section('content')
 <div class="container mx-auto py-6">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Sales Record</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Add New Sales Record</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-2">
-                Update the details for this sales record.
+                Fill in the details for the new sales record.
             </p>
         </div>
 
@@ -41,16 +41,15 @@
             </div>
         @endif
 
-        <form action="{{ route('sales-records.update', $salesRecord) }}" method="POST" class="space-y-6">
+        <form action="{{ route('sales-records.store.manual') }}" method="POST" class="space-y-6">
             @csrf
-            @method('PUT')
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Invoice Number -->
                 <div>
                     <label for="invoice_no" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Invoice No *</label>
                     <input type="text" name="invoice_no" id="invoice_no" 
-                           value="{{ old('invoice_no', $salesRecord->invoice_no ?? '') }}" 
+                           value="{{ old('invoice_no') }}" 
                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                            placeholder="Enter invoice number">
                     @error('invoice_no')
@@ -65,7 +64,7 @@
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                         <option value="">Select a customer</option>
                         @foreach($customers as $customer)
-                            <option value="{{ $customer->id }}" {{ old('customer_id', $salesRecord->customer_id ?? '') == $customer->id ? 'selected' : '' }}>
+                            <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
                                 {{ $customer->name }}
                             </option>
                         @endforeach
@@ -82,7 +81,7 @@
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
                         <option value="">Select a product</option>
                         @foreach($products as $product)
-                            <option value="{{ $product->id }}" {{ old('product_id', $salesRecord->product_id ?? '') == $product->id ? 'selected' : '' }} data-name="{{ $product->product_name }}">
+                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }} data-name="{{ $product->product_name }}">
                                 {{ $product->product_name }} ({{ $product->product_code }})
                             </option>
                         @endforeach
@@ -96,7 +95,7 @@
                 <div>
                     <label for="product_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Name *</label>
                     <input type="text" name="product_name" id="product_name" 
-                           value="{{ old('product_name', $salesRecord->product_name ?? '') }}" 
+                           value="{{ old('product_name') }}" 
                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                            placeholder="Enter product name">
                     @error('product_name')
@@ -108,7 +107,7 @@
                 <div>
                     <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price *</label>
                     <input type="number" step="0.01" name="price" id="price" 
-                           value="{{ old('price', $salesRecord->price ?? '') }}" 
+                           value="{{ old('price') }}" 
                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                            placeholder="Enter price">
                     @error('price')
@@ -120,7 +119,7 @@
                 <div>
                     <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantity *</label>
                     <input type="number" name="quantity" id="quantity" 
-                           value="{{ old('quantity', $salesRecord->quantity ?? '') }}" 
+                           value="{{ old('quantity') }}" 
                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                            placeholder="Enter quantity">
                     @error('quantity')
@@ -132,7 +131,7 @@
                 <div>
                     <label for="total_amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Amount</label>
                     <input type="number" step="0.01" name="total_amount" id="total_amount" 
-                           value="{{ old('total_amount', $salesRecord->total_amount ?? '') }}" 
+                           value="{{ old('total_amount') }}" 
                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                            placeholder="0.00" readonly>
                     @error('total_amount')
@@ -145,9 +144,9 @@
                     <label for="payment_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Status *</label>
                     <select name="payment_status" id="payment_status" 
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white">
-                        <option value="pending" {{ old('payment_status', $salesRecord->payment_status ?? 'pending') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="paid" {{ old('payment_status', $salesRecord->payment_status ?? '') == 'paid' ? 'selected' : '' }}>Paid</option>
-                        <option value="partial" {{ old('payment_status', $salesRecord->payment_status ?? '') == 'partial' ? 'selected' : '' }}>Partial</option>
+                        <option value="pending" {{ old('payment_status', 'pending') == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="paid" {{ old('payment_status') == 'paid' ? 'selected' : '' }}>Paid</option>
+                        <option value="partial" {{ old('payment_status') == 'partial' ? 'selected' : '' }}>Partial</option>
                     </select>
                     @error('payment_status')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -163,7 +162,7 @@
                 </a>
                 <button type="submit" 
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                    <i class="fas fa-save mr-2"></i> Update Sales Record
+                    <i class="fas fa-save mr-2"></i> Save Sales Record
                 </button>
             </div>
         </form>

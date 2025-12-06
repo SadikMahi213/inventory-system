@@ -1,0 +1,5 @@
+Date,Invoice No,Product ID,Product Name,Model,Size,Color or material,Quality,Quantity Purchased,Unit Price (Buy),Total Purchase Cost,Supplier,Payment Status
+2025-12-01,INV-001,,Laptop Computer,Model X,Large,Black,High,5,1200.00,6000.00,Tech Supplier,paid
+2025-12-02,INV-002,,Office Chair,,Medium,Gray,Standard,10,150.00,,Furniture Corp,
+2025-12-03,,,Monitor Stand,MS-200,Small,Metal,Standard,20,25.00,500.00,Office Supply Co,due
+2025-12-04,INV-004,,Keyboard,,Compact,White,Premium,15,75.00,1125.00,Tech Supplier,partial

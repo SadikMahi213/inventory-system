@@ -1,11 +1,11 @@
-@extends('layouts.erp')
+@extends('layouts.app')
 
 @section('title', 'Sale Details')
 
 @section('content')
-<div class="container mx-auto px-4">
+<div class="container mx-auto py-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold">Sale Details</h1>
+        <h1 class="text-xl font-bold mb-4">Sale Details</h1>
         <div>
             <a href="{{ route('sales-records.edit', $salesRecord) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
                 <i class="fas fa-edit mr-2"></i> Edit

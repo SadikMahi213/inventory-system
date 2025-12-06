@@ -33,7 +33,7 @@
                     <table class="min-w-full">
                         <tr>
                             <td class="py-2 font-semibold">Date:</td>
-                            <td class="py-2">{{ $purchaseRecord->date->format('M d, Y') }}</td>
+                            <td class="py-2">{{ optional($purchaseRecord->date)->format('M d, Y') }}</td>
                         </tr>
                         <tr>
                             <td class="py-2 font-semibold">Product:</td>
@@ -123,14 +123,15 @@
                 <h3 class="text-lg font-semibold">Stock Impact</h3>
             </div>
             <div class="px-6 py-4">
-                @if($purchaseRecord->product->stock)
-                    <p>Current stock for this product: <strong>{{ $purchaseRecord->product->stock->current_stock }}</strong></p>
-                    <p>Purchase quantity added: <strong>{{ $purchaseRecord->quantity }}</strong></p>
-                    <p>Average cost per unit: <strong>${{ number_format($purchaseRecord->product->stock->average_cost, 2) }}</strong></p>
-                @else
-                    <p>No stock information available for this product.</p>
-                @endif
-            </div>
+    @if(optional($purchaseRecord->product)->stock)
+        <p>Current stock for this product: <strong>{{ optional($purchaseRecord->product->stock)->current_stock ?? 'N/A' }}</strong></p>
+        <p>Purchase quantity added: <strong>{{ $purchaseRecord->quantity ?? 'N/A' }}</strong></p>
+        <p>Average cost per unit: <strong>${{ number_format(optional($purchaseRecord->product->stock)->average_cost ?? 0, 2) }}</strong></p>
+    @else
+        <p>No stock information available for this product.</p>
+    @endif
+</div>
+
         </div>
     </div>
 </div>

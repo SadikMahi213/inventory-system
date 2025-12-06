@@ -7,7 +7,6 @@ use App\Models\PurchaseRecord;
 use App\Models\Product;
 use App\Models\Supplier;
 use App\Exports\PurchaseRecordsExport;
-use App\Exports\PurchaseRecordsTemplateExport;
 use App\Imports\PurchaseRecordsImport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -83,9 +82,15 @@ class PurchaseRecordController extends Controller
      */
     public function create(): View
     {
-        $products = Product::all();
-        $suppliers = Supplier::all();
-        return view('purchase-records.create', compact('products', 'suppliers'));
+        return view('purchase-records.create-manual');
+    }
+    
+    /**
+     * Show the form for creating a new resource manually.
+     */
+    public function createManual(): View
+    {
+        return view('purchase-records.create-manual');
     }
 
     /**
@@ -126,6 +131,62 @@ class PurchaseRecordController extends Controller
 
         // Dispatch event to update stock
         event(new PurchaseRecordCreated($purchaseRecord));
+
+        return redirect()->route('purchase-records.index')
+            ->with('success', 'Purchase record created successfully.');
+    }
+    
+    /**
+     * Store a newly created resource manually in storage.
+     */
+    public function storeManual(Request $request): RedirectResponse
+    {
+        // Validate all inputs as nullable
+        $request->validate([
+            'id' => 'nullable|integer|unique:purchase_records,id',
+            'date' => 'nullable|date',
+            'invoice_no' => 'nullable|string|max:255',
+            'product_id' => 'nullable|integer|min:1',
+            'product_name' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
+            'size' => 'nullable|string|max:255',
+            'color_or_material' => 'nullable|string|max:255',
+            'quality' => 'nullable|string|max:255',
+            'quantity' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|string|max:255',
+            'unit_price' => 'nullable|numeric|min:0',
+            'total_price' => 'nullable|numeric|min:0',
+            'supplier_id' => 'nullable|integer|min:1',
+            'payment_status' => 'nullable|in:paid,due,partial',
+            'created_at' => 'nullable|date',
+            'updated_at' => 'nullable|date',
+        ]);
+
+        // Prepare data for insertion - only include fields that are present
+        $data = array_filter($request->only([
+            'id',
+            'date',
+            'invoice_no',
+            'product_id',
+            'product_name',
+            'model',
+            'size',
+            'color_or_material',
+            'quality',
+            'quantity',
+            'unit',
+            'unit_price',
+            'total_price',
+            'supplier_id',
+            'payment_status',
+            'created_at',
+            'updated_at',
+        ]), function ($value) {
+            return $value !== null && $value !== '';
+        });
+
+        // Create the purchase record
+        $purchaseRecord = PurchaseRecord::create($data);
 
         return redirect()->route('purchase-records.index')
             ->with('success', 'Purchase record created successfully.');
@@ -201,11 +262,57 @@ class PurchaseRecordController extends Controller
     }
 
     /**
-     * Download Excel template for purchase records import.
+     * Download CSV template for purchase records import.
      */
     public function downloadTemplate()
     {
-        return Excel::download(new PurchaseRecordsTemplateExport, 'purchase_records_template.xlsx');
+        $headers = [
+            'Date',
+            'Invoice No',
+            'Product ID',
+            'Product Name',
+            'Model',
+            'Size',
+            'Color or material',
+            'Quality',
+            'Quantity',
+            'Unit',
+            'Unit Price',
+            'Total Price',
+            'Supplier ID',
+            'Payment Status',
+        ];
+        
+        $callback = function() use ($headers) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            
+            // Add an example row
+            $exampleRow = [
+                '2025-12-01',
+                'INV-001',
+                '1',
+                'Sample Product',
+                'Model X',
+                'Large',
+                'Black',
+                'High',
+                '5',
+                'piece',
+                '100.00',
+                '500.00',
+                '1',
+                'paid',
+            ];
+            fputcsv($file, $exampleRow);
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=purchase_records_template.csv"
+        ]);
     }
 
     /**
